@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link ref="stylesheet" type="text/css" href="dist/snackbar.min.css" />
+    <script src="dist/snackbar.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="js/manager.js"></script>
+    <link rel="stylesheet" href="/css/manager.css">
+    <title>LifeLine</title>
+</head>
+<body>
+
+    <!-- Start Nav -->
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+         <div class="navbar-header">
+      <a href="/index"><img class="header-icon"  src="images/LIFELINE.png"></a>
+    </div>
+    </div>
+      </nav>
+    <!-- End Nav -->
+    <main>
+        <div class="manager-container container">
+            <h1 class="manager-title">Hello Manager</h1>
+            <div class="operation-buttons mt-10">
+                <button class="view-doctors main-btn">View Doctor's List</button>
+                <button class="view-counselor main-btn">View counselor's List</button>
+                <button class="view-patient main-btn">View patient's List</button>
+                <button class="add-patient main-btn">Add Patient</button>
+                <button class="generate-report main-btn">Generate Report</button>
+            </div>
+             <div class="alert alert-danger w-100" th:if="${status == 'failed'}" th:inline="text">
+				[[${message}]]
+			</div> 
+                  <!-- skeleton to display loader -->
+        <div class="skeleton-container display-none mt-1">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <!-- <div class="skeleton skeleton-btn"></div> -->
+        </div>
+        <div class="doctor-list-table list-table mt-1 display-none">
+           
+            <table class="table table-striped active doctors doctors-main-div display-none">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Doctor ID</th>
+                    <th scope="col">Doctor Email</th>
+                    <th scope="col"></th>
+                  </tr>
+                  <tr class="display-none doctor-row">
+                    <td class="d-name"></td>
+                    <td class="d-id"></td>
+                    <td class="d-email"></td>
+                    <td class="d-accept-reject">
+                        <button type="button" class="btn btn-success d-accept d-button" data-action="accept">Accept</button>
+                        <button type="button" class="btn btn-danger d-reject d-button" data-action="reject">Reject</button>
+                        <button type="button" class="btn btn-primary" disabled>Accepted</button>
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                </tbody>
+            </table>
+            <div class="empty-message">
+                There are no doctors.
+            </div>
+        </div>
+         <!-- Counsellor details -->
+        <div class="Counsellor-list-table list-table mt-1 display-none">
+            <table class="table table-striped counsellor-main-div display-none">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Counsellor ID</th>
+                    <th scope="col">Counsellor Email</th>
+                    <th scope="col"></th>
+                  </tr>
+                  <tr class="display-none counsellor-row">
+                    <td class="c-name"></td>
+                    <td class="c-id"></td>
+                    <td class="c-email"></td>
+                    <td class="c-accept-reject">
+                        <button type="button" class="btn btn-success c-accept c-button" data-action="accept">Accept</button>
+                        <button type="button" class="btn btn-danger c-reject c-button" data-action="reject">Reject</button>
+                        <button type="button" class="btn btn-primary" disabled>Accepted</button>
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td class="d-name">Cameron Rocha</td>
+                    <td class="d-email">nijiz@mailinator.com</td>
+                    <td class="d-accept-reject">
+                        <button type="button" class="btn btn-success">Accept</button>
+                        <button type="button" class="btn btn-danger">Reject</button>
+                    </td>
+                  </tr>
+                </tbody>
+            </table>
+            <div class="empty-message">
+              There are no Counsellors.
+          </div>
+        </div>
+        <!-- Patient details -->
+            <div class="Patient-list-table list-table mt-1 display-none">
+              <table class="patient-table table table-striped display-none">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Email</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="display-none patient-row">
+                      <td class="p-name"></td>
+                      <td class="p-email"></td>
+                      <td class="p-accept-reject">
+                          <a type="button" class="patient-view-detail btn main-table-btn">View Details</a>
+                          <button type="button" class="btn btn-danger p-reject p-button" data-action="reject">Remove</button>
+                      </td>
+                    </tr>
+                  </tbody>
+              </table>
+              <div class="error-message">
+  
+              </div>
+          </div>
+          <!-- Add Patient Form -->
+        <div class="add-patient-form list-table display-none">
+          <form id="patientRegisterForm" action="addPatient" class="register-form">
+          <div class="success-message display-none">You are registered successfully.</div>
+          <div class="field-raw">
+              <label for="firstName">First name:</label>
+              <input type="text"  name="firstName" class="firstName" value="">
+              <small class="alert-message">*First Name is required</small>
+          </div>
+      
+          <div class="field-raw">
+              <label for="lastName">Last name:</label>
+              <input type="text"  name="lastName" class="lastName" value="">
+              <small class="alert-message">*Last Name is required</small>
+          </div>
+      
+          <div class="field-raw">
+              <label for="email">Email:</label>
+              <input type="email" name = "email" class="email">
+              <small class="alert-message">*Email is required</small>
+          </div>
+          <div class="field-raw">
+              <label for="birthday">Birthday:</label>
+              <input type="date" name="birthday" class="birthday">
+              <small class="alert-message">*Birthday is required</small>
+          </div>
+          <div class="field-raw">
+              <label for="address1">Address Line 1:</label>
+              <input type="text" name="address1" class="address1">
+              <small class="alert-message">*Address Line 1 is required</small>
+          </div>
+          <div class="field-raw">
+              <label for="address2">Address Line 2:</label>
+              <input type="text" name="address2" class="address2">
+              <small class="alert-message">*Address Line 2 is required</small>
+          </div>
+          <div class="field-raw">
+              <label for="mobileNumber">Mobile Number:</label>
+              <input type="text" name="mobileNumber" class="mobileNumber" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+              <small class="alert-message">*Mobile Number is required</small>
+          </div>
+      
+          <div class="field-raw">
+              <label for="pass">Password (8 characters minimum required ):</label>
+              <input type="password"  name="password" class="password">
+              <small class="alert-message">*Password is required</small>
+          </div>
+          <div class="field-raw">
+              <label for="confirmPassword">Confirm Password </label>
+              <input type="password"  name="confirmPassword" class="confirmPassword">
+              <small class="alert-message">*Password and Confirm Password are not same</small>
+          </div>
+          <div class="field-raw">
+              <input type="hidden"  name="from" class="sentFrom" value="M">
+          </div>
+          <button class="register-button">Submit</button>
+          <input type="submit" class="display-none" value="Submit">
+        </form> 
+        </div>
+        </div>
+    </main>
+    <!-- Footer Start -->
+<footer class="text-center text-white fixed-bottom" style="background-color: #21081a;">
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        <p class="paragraph-text">Contact Us:</p>
+        <a href="#">Github</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Email</a>
+        <p class="paragraph-text" style="padding-top: 10px; font-size: 10px;">© 2023 Copyright</p>
+    </div>
+</footer>
+<!-- Footer End -->
+</body>
+</html>

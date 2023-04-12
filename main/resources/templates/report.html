@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link ref="stylesheet" type="text/css" href="dist/snackbar.min.css" />
+  <link rel="stylesheet" href="/css/manager.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+  <script src="dist/snackbar.min.js"></script>
+  <script src="js/manager.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <title>LifeLine</title>
+</head>
+
+<body>
+
+  <!-- Start Nav -->
+
+  <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+         <div class="navbar-header">
+      <a href="/index"><img class="header-icon"  src="/images/LIFELINE.png"></a>
+    </div>
+    </div>
+      </nav>
+  <!-- End Nav -->
+  <main class="container px-5">
+    <div id="reportsPortal" class="container px-5" style="padding-left: 5rem; padding-right: 5rem;">
+      <ul class="nav nav-tabs nav-justified">
+        <li role="presentation" :class="currentChecked==='daily' ?'active': ''"><a href="#"
+            @click="getDailyPatientCount()">Daily</a></li>
+        <li role="presentation" :class="currentChecked==='weekly' ?'active': ''"><a href="#"
+            @click="getWeeklyPatientCount()">Weekly</a></li>
+        <li role="presentation" :class="currentChecked==='monthly' ?'active': ''"><a href="#"
+            @click="getMonthlyPatientCount()">Monthly</a></li>
+      </ul>
+      <!-- <div
+          class="report-type-panel d-flex flex-column flex-md-row justify-content-md-between align-items-md-center justify-content-center align-items-center"> -->
+      <!-- <div class="report-type-panel row">
+
+        <div class="col-4 px-1 text-wrap">
+          <button class="btn btn-outline-primary" @click="getDailyPatientCount()">
+            Daily Report
+          </button>
+        </div>
+
+        <div class="col-4 px-1 text-wrap">
+          <button class="btn btn-outline-primary" @click="getWeeklyPatientCount()">
+            Weekly Report
+          </button>
+        </div>
+
+        <div class="col-4 px-1 text-wrap">
+          <button class="btn btn-outline-primary" @click="getMonthlyPatientCount()">
+            Monthly Report
+          </button>
+        </div>
+
+
+      </div> -->
+      <div class="reports-data" style="padding-left: 5rem; padding-right: 5rem;">
+        <div v-if="currentChecked === 'daily'" class="daily-report-div px-5">
+          <!-- <h3 class="daily-report">
+            Daily Report
+          </h3> -->
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col" class="text-center">Patient Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="pData in dailyReportData">
+                <td>{{pData.ELEMENT}}</td>
+                <td class="text-center">
+                  {{pData.COUNT}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div v-if="currentChecked === 'weekly'" class="weekly-report-div">
+          <!-- <h3 class="weekly-report">
+            Weekly Report
+          </h3> -->
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Year</th>
+                <th scope="col">Week #</th>
+                <th scope="col" class="text-center">Patient Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="pData in weeklyReportData">
+                <td>{{pData.YEAR}}</td>
+                <td>{{pData.WEEK}}</td>
+                <td class="text-center">
+                  {{pData.COUNT}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div v-if="currentChecked === 'monthly'" class="monthly-report-div">
+          <!-- <h3 class="monthly-report">
+            Monthly Report
+          </h3> -->
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Month & Year</th>
+                <th scope="col" class="text-center">Patient Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="pData in monthlyReportData">
+                <td>{{pData.ELEMENT}}</td>
+                <td class="text-center">
+                  {{pData.COUNT}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <!-- Footer Start -->
+  <footer class="text-center text-white fixed-bottom" style="background-color: #21081a;">
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+      <p class="paragraph-text">Contact Us:</p>
+      <a href="#">Github</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Email</a>
+      <p class="paragraph-text" style="padding-top: 10px; font-size: 10px;">© 2023 Copyright</p>
+    </div>
+  </footer>
+  <!-- Footer End -->
+  <script>
+    let reportsPortal = Vue.createApp({
+      data() {
+        return {
+          dailyReportData: [],
+          weeklyReportData: [],
+          monthlyReportData: [],
+          currentChecked: "none",
+        };
+      },
+      computed: {
+        dailyReportPresent() {
+          return (this.dailyReportData && (this.dailyReportData.length > 0));
+        },
+        weeklyReportPresent() {
+          return (this.weeklyReportData && (this.weeklyReportData.length > 0));
+        },
+        monthlyReportPresent() {
+          return (this.monthlyReportData && (this.monthlyReportData.length > 0));
+        }
+      },
+      methods: {
+        getDailyPatientCount: function () {
+          this.currentChecked = "daily";
+          console.log("daily---");
+          fetch("http://localhost:9999/dailyPatientCount", {
+            method: "GET"
+          })
+            .then(async (resp) => {
+              const respData = await resp.json();
+              console.log(respData);
+
+              let dataList = [];
+              if (respData) {
+                respData.forEach(function (element) {
+                  dataList.push({
+                    COUNT: element.COUNT,
+                    ELEMENT: (new Date(element.DAY)).toDateString()
+                  });
+                });
+              }
+              this.dailyReportData = dataList;
+
+            })
+            .catch(e => console.log(e));
+        },
+        getWeeklyPatientCount: function () {
+          this.currentChecked = "weekly";
+          fetch("http://localhost:9999/weeklyPatientCount", {
+            method: "GET"
+          })
+            .then(async (resp) => {
+              const respData = await resp.json();
+              console.log(respData);
+
+              let dataList = [];
+              if (respData && respData.length > 0) {
+                respData.forEach(function (element) {
+                  dataList.push({
+                    COUNT: element.COUNT,
+                    YEAR: element.YEAR,
+                    WEEK: element.WEEK
+                  });
+                });
+              }
+              this.weeklyReportData = dataList;
+
+            })
+            .catch(e => console.log(e));
+        },
+        getMonthlyPatientCount: function () {
+          this.currentChecked = "monthly";
+          fetch("http://localhost:9999/monthlyPatientCount", {
+            method: "GET"
+          })
+            .then(async (resp) => {
+              const respData = await resp.json();
+              console.log(respData);
+
+              let dataList = [];
+              if (respData) {
+                respData.forEach(function (element) {
+                  console.log(element);
+                  let monthMap = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                  dataList.push({
+                    COUNT: element.COUNT,
+                    ELEMENT: (monthMap[element.MONTH - 1] + " " + element.YEAR)
+                  });
+                });
+              }
+              this.monthlyReportData = dataList;
+
+            })
+            .catch(e => console.log(e));
+        },
+      }
+    });
+    reportsPortal.mount('#reportsPortal');
+  </script>
+</body>
+
+</html>
